@@ -2,7 +2,6 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { PublicAxiosInstance } from "../utils/AxiosInstance";
-import { toast } from "react-hot-toast";
 
 export type RegisterInput = {
   email: string;

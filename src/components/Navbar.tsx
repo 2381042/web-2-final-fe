@@ -7,7 +7,6 @@ import {
 } from "@headlessui/react";
 import { BellIcon } from "@heroicons/react/16/solid";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../utils/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 const navigation = [
@@ -22,7 +21,6 @@ function classNames(...classes: string[]) {
 }
 
 const Navbar = () => {
-  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
