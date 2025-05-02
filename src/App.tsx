@@ -14,7 +14,6 @@ import PrivateRoute from "./utils/PrivateRoute";
 import PublicRoute from "./utils/PublicRoute";
 import { AuthProvider } from "./utils/AuthProvider";
 import { Toaster } from "react-hot-toast";
-import { AnimatePresence } from "framer-motion";
 
 // Camera routes
 import Product from "./pages/Product";
