@@ -1,7 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "../utils/AxiosInstance";
+import { PublicAxiosInstance } from "../utils/AxiosInstance";
+import { toast } from "react-hot-toast";
 
 export type RegisterInput = {
   email: string;
@@ -19,7 +20,7 @@ export const Register = () => {
   } = useForm<RegisterInput>();
   const handleRegister = async (data: RegisterInput) => {
     try {
-      await axios.post("/api/auth/register", {
+      await PublicAxiosInstance.post("/auth/register", {
         email: data.email,
         username: data.username,
         password: data.password

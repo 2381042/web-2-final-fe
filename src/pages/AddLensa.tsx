@@ -1,36 +1,29 @@
 import { useMutation } from "@tanstack/react-query";
-import ProductForm, { KameraFormInput } from "../components/ProductForm";
-import AxiosInstance from "../utils/AxiosInstance";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import LensaForm, { LensaFormInput } from "../components/LensaForm";
+import AxiosInstance from "../utils/AxiosInstance";
 import { toast } from "react-hot-toast";
 
-const addKamera = async (data: KameraFormInput) => {
+const addLensa = async (data: LensaFormInput) => {
   try {
-    const response = await AxiosInstance.post("/kamera", data);
-    toast.success("Camera added successfully!");
+    const response = await AxiosInstance.post("/lensa", data);
+    toast.success("Lens added successfully!");
     return response.data;
   } catch (error) {
-    toast.error("Failed to add camera");
+    toast.error("Failed to add lens");
     throw error;
   }
 };
 
-const AddProduct = () => {
-  const { mutate, isSuccess, isPending } = useMutation({
-    mutationFn: addKamera
+const AddLensa = () => {
+  const addLensaMutation = useMutation({
+    mutationFn: addLensa
   });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isSuccess) {
-      navigate("/product", { replace: true });
-    }
-  }, [isSuccess, navigate]);
-
   return (
     <div className="container mx-auto px-4 py-8">
-      {isPending && (
+      {addLensaMutation.isPending && (
         <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
           <div className="flex items-center bg-white/90 px-6 py-3 rounded-lg shadow-lg">
             <span className="text-2xl mr-4 text-gray-800">Adding...</span>
@@ -57,10 +50,19 @@ const AddProduct = () => {
           </div>
         </div>
       )}
-      <h2 className="text-2xl font-bold mb-6">Add New Camera</h2>
-      <ProductForm isEdit={false} mutateFn={mutate} />
+      <h2 className="text-2xl font-bold mb-6">Add New Lens</h2>
+      <LensaForm
+        isEdit={false}
+        mutateFn={(data) => {
+          addLensaMutation.mutate(data, {
+            onSuccess: () => {
+              navigate("/lensa", { replace: true });
+            }
+          });
+        }}
+      />
     </div>
   );
 };
 
-export default AddProduct;
+export default AddLensa; 

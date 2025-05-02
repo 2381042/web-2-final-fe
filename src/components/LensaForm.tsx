@@ -1,46 +1,41 @@
 import { useForm } from "react-hook-form";
 
-export type KameraFormInput = {
-  merek: string;
+export type LensaFormInput = {
+  tipe: string;
   warna: string;
-  stok: number;
+  ukuran: string;
 };
 
-interface ProductFormProps {
+interface LensaFormProps {
   isEdit: boolean;
-  mutateFn: (data: KameraFormInput) => void;
-  defaultInputData?: KameraFormInput;
+  mutateFn: (data: LensaFormInput) => void;
+  defaultInputData?: LensaFormInput;
 }
 
-const ProductForm = ({ isEdit, mutateFn, defaultInputData }: ProductFormProps) => {
+const LensaForm = ({ isEdit, mutateFn, defaultInputData }: LensaFormProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<KameraFormInput>({
+  } = useForm<LensaFormInput>({
     defaultValues: defaultInputData,
   });
 
-  const onSubmit = (data: KameraFormInput) => {
-    // Ensure stok is an integer
-    const formData = {
-      ...data,
-      stok: parseInt(data.stok.toString(), 10)
-    };
-    mutateFn(formData);
+  const onSubmit = (data: LensaFormInput) => {
+    mutateFn(data);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700">Merek</label>
+        <label className="block text-sm font-medium text-gray-700">Tipe</label>
         <input
           type="text"
-          {...register("merek", { required: "Merek is required" })}
+          {...register("tipe", { required: "Tipe is required" })}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         />
-        {errors.merek && (
-          <p className="mt-1 text-sm text-red-600">{errors.merek.message}</p>
+        {errors.tipe && (
+          <p className="mt-1 text-sm text-red-600">{errors.tipe.message}</p>
         )}
       </div>
 
@@ -57,20 +52,14 @@ const ProductForm = ({ isEdit, mutateFn, defaultInputData }: ProductFormProps) =
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Stok</label>
+        <label className="block text-sm font-medium text-gray-700">Ukuran</label>
         <input
-          type="number"
-          step="1"
-          min="0"
-          {...register("stok", { 
-            required: "Stok is required",
-            min: { value: 0, message: "Stok must be greater than or equal to 0" },
-            valueAsNumber: true
-          })}
+          type="text"
+          {...register("ukuran", { required: "Ukuran is required" })}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         />
-        {errors.stok && (
-          <p className="mt-1 text-sm text-red-600">{errors.stok.message}</p>
+        {errors.ukuran && (
+          <p className="mt-1 text-sm text-red-600">{errors.ukuran.message}</p>
         )}
       </div>
 
@@ -78,10 +67,10 @@ const ProductForm = ({ isEdit, mutateFn, defaultInputData }: ProductFormProps) =
         type="submit"
         className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       >
-        {isEdit ? "Update Camera" : "Add Camera"}
+        {isEdit ? "Update Lens" : "Add Lens"}
       </button>
     </form>
   );
 };
 
-export default ProductForm;
+export default LensaForm; 

@@ -4,37 +4,37 @@ import AxiosInstance from "../utils/AxiosInstance";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 
-interface KameraDetail {
+interface LensaDetail {
   id: number;
-  merek: string;
+  tipe: string;
   warna: string;
-  stok: number;
+  ukuran: string;
   created_at: string;
   updated_at: string;
 }
 
-export const fetchKameraDetail = async (id: string | undefined) => {
+export const fetchLensaDetail = async (id: string | undefined) => {
   try {
-    const response = await AxiosInstance.get<KameraDetail>(`/kamera/${id}`);
+    const response = await AxiosInstance.get<LensaDetail>(`/lensa/${id}`);
     return response.data;
   } catch (error) {
-    toast.error("Failed to fetch camera details");
+    toast.error("Failed to fetch lens details");
     throw error;
   }
 };
 
-const deleteKamera = async (id: string) => {
+const deleteLensa = async (id: string) => {
   try {
-    const response = await AxiosInstance.delete(`/kamera/${id}`);
-    toast.success("Camera deleted successfully!");
+    const response = await AxiosInstance.delete(`/lensa/${id}`);
+    toast.success("Lens deleted successfully!");
     return response.data;
   } catch (error) {
-    toast.error("Failed to delete camera");
+    toast.error("Failed to delete lens");
     throw error;
   }
 };
 
-const ProductDetailSkeleton = () => {
+const LensaDetailSkeleton = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="space-y-4">
@@ -49,28 +49,31 @@ const ProductDetailSkeleton = () => {
   );
 };
 
-const ProductDetail = () => {
+const LensaDetail = () => {
   const { id } = useParams();
-  const { data: kamera, isLoading, error } = useQuery({
-    queryKey: ["kameraDetail", id],
-    queryFn: () => fetchKameraDetail(id)
+  const { data: lensa, isLoading, error } = useQuery({
+    queryKey: ["lensaDetail", id],
+    queryFn: () => fetchLensaDetail(id)
   });
-  const deleteKameraMutation = useMutation({
-    mutationFn: () => deleteKamera(id!)
+  const deleteLensaMutation = useMutation({
+    mutationFn: () => {
+      if (!id) throw new Error("No lens ID provided");
+      return deleteLensa(id);
+    }
   });
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (deleteKameraMutation.isSuccess) {
-      navigate("/product", { replace: true });
+    if (deleteLensaMutation.isSuccess) {
+      navigate("/lensa", { replace: true });
     }
-  }, [deleteKameraMutation.isSuccess, navigate]);
+  }, [deleteLensaMutation.isSuccess, navigate]);
 
   if (error) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center text-red-500">
-          Error loading camera details. Please try again later.
+          Error loading lens details. Please try again later.
         </div>
       </div>
     );
@@ -78,11 +81,11 @@ const ProductDetail = () => {
 
   return (
     <div>
-      {isLoading || !kamera ? (
-        <ProductDetailSkeleton />
+      {isLoading || !lensa ? (
+        <LensaDetailSkeleton />
       ) : (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
-          {deleteKameraMutation.isPending && (
+          {deleteLensaMutation.isPending && (
             <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
               <div className="flex items-center bg-white/90 px-6 py-3 rounded-lg shadow-lg">
                 <span className="text-2xl mr-4 text-gray-800">Deleting...</span>
@@ -112,45 +115,45 @@ const ProductDetail = () => {
           <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
             <div className="mb-6">
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                {kamera.merek}
+                {lensa.tipe}
               </h1>
               <div className="space-y-2">
                 <p className="text-gray-600">
-                  <span className="font-medium">Color:</span> {kamera.warna}
+                  <span className="font-medium">Color:</span> {lensa.warna}
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-medium">Stock:</span> {kamera.stok}
+                  <span className="font-medium">Size:</span> {lensa.ukuran}
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-medium">Created:</span> {new Date(kamera.created_at).toLocaleDateString()}
+                  <span className="font-medium">Created:</span> {new Date(lensa.created_at).toLocaleDateString()}
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-medium">Last Updated:</span> {new Date(kamera.updated_at).toLocaleDateString()}
+                  <span className="font-medium">Last Updated:</span> {new Date(lensa.updated_at).toLocaleDateString()}
                 </p>
               </div>
             </div>
             <div className="flex space-x-4">
               <button
-                onClick={() => navigate("/product")}
+                onClick={() => navigate("/lensa")}
                 className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded"
               >
                 Back to List
               </button>
               <button
-                onClick={() => navigate(`/product/edit/${kamera.id}`)}
+                onClick={() => navigate(`/lensa/${lensa.id}/edit`)}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               >
-                Edit Camera
+                Edit Lens
               </button>
               <button
                 onClick={() => {
-                  if (confirm("Are you sure you want to delete this camera?")) {
-                    deleteKameraMutation.mutate();
+                  if (confirm("Are you sure you want to delete this lens?")) {
+                    deleteLensaMutation.mutate();
                   }
                 }}
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
               >
-                Delete Camera
+                Delete Lens
               </button>
             </div>
           </div>
@@ -160,4 +163,4 @@ const ProductDetail = () => {
   );
 };
 
-export default ProductDetail;
+export default LensaDetail; 

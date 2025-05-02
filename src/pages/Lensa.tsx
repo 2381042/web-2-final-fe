@@ -3,28 +3,26 @@ import AxiosInstance from "../utils/AxiosInstance";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
-interface Kamera {
+interface Lensa {
   id: number;
-  merek: string;
+  tipe: string;
   warna: string;
-  stok: number;
+  ukuran: string;
+  created_at: string;
+  updated_at: string;
 }
 
-const fetchKameraList = async () => {
+const fetchLensaList = async () => {
   try {
-    const response = await AxiosInstance.get<Kamera[]>("/kamera", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`
-      }
-    });
+    const response = await AxiosInstance.get<Lensa[]>("/lensa");
     return response.data;
   } catch (error) {
-    toast.error("Failed to fetch camera list");
+    toast.error("Failed to fetch lens list");
     throw error;
   }
 };
 
-const ProductSkeleton = () => {
+const LensaSkeleton = () => {
   return (
     <div className="group relative">
       <div className="mt-4 flex justify-between">
@@ -38,10 +36,10 @@ const ProductSkeleton = () => {
   );
 };
 
-const Product = () => {
-  const { data: kameraList, isLoading, error } = useQuery({
-    queryKey: ["kameraList"],
-    queryFn: fetchKameraList,
+const Lensa = () => {
+  const { data: lensaList, isLoading, error } = useQuery({
+    queryKey: ["lensaList"],
+    queryFn: fetchLensaList,
   });
 
   const navigate = useNavigate();
@@ -50,7 +48,7 @@ const Product = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center text-red-500">
-          Error loading camera list. Please try again later.
+          Error loading lens list. Please try again later.
         </div>
       </div>
     );
@@ -60,7 +58,7 @@ const Product = () => {
     <div className="container mx-auto px-4">
       <button
         className="fixed bottom-4 right-4 bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        onClick={() => navigate("/product/add")}
+        onClick={() => navigate("/lensa/add")}
       >
         <svg
           className="w-6 h-6"
@@ -80,29 +78,29 @@ const Product = () => {
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            List of Cameras
+            List of Lenses
           </h2>
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
             {isLoading
               ? Array.from({ length: 6 }).map((_, index) => (
-                  <ProductSkeleton key={index} />
+                  <LensaSkeleton key={index} />
                 ))
-              : kameraList?.map((kamera) => (
+              : lensaList?.map((lensa) => (
                   <div
-                    key={kamera.id}
+                    key={lensa.id}
                     className="group relative p-4 border rounded-lg hover:shadow-lg transition-shadow cursor-pointer"
-                    onClick={() => navigate(`/product/${kamera.id}`)}
+                    onClick={() => navigate(`/lensa/${lensa.id}`)}
                   >
                     <div className="flex justify-between items-start">
                       <div>
                         <h3 className="text-lg font-medium text-gray-900">
-                          {kamera.merek}
+                          {lensa.tipe}
                         </h3>
                         <p className="mt-1 text-sm text-gray-500">
-                          Color: {kamera.warna}
+                          Color: {lensa.warna}
                         </p>
                         <p className="mt-1 text-sm text-gray-500">
-                          Stock: {kamera.stok}
+                          Size: {lensa.ukuran}
                         </p>
                       </div>
                     </div>
@@ -115,4 +113,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default Lensa; 

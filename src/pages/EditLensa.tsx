@@ -1,67 +1,67 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ProductForm, { KameraFormInput } from "../components/ProductForm";
+import LensaForm, { LensaFormInput } from "../components/LensaForm";
 import AxiosInstance from "../utils/AxiosInstance";
 import { toast } from "react-hot-toast";
 
-interface KameraDetail {
+interface LensaDetail {
   id: number;
-  merek: string;
+  tipe: string;
   warna: string;
-  stok: number;
+  ukuran: string;
   created_at: string;
   updated_at: string;
 }
 
-const fetchKameraDetail = async (id: string | undefined) => {
+const fetchLensaDetail = async (id: string | undefined) => {
   try {
-    const response = await AxiosInstance.get<KameraDetail>(`/kamera/${id}`);
+    const response = await AxiosInstance.get<LensaDetail>(`/lensa/${id}`);
     return response.data;
   } catch (error) {
-    toast.error("Failed to fetch camera details");
+    toast.error("Failed to fetch lens details");
     throw error;
   }
 };
 
-const editKamera = async (data: KameraFormInput, id: string | undefined) => {
+const editLensa = async (data: LensaFormInput, id: string | undefined) => {
   try {
-    const response = await AxiosInstance.patch(`/kamera/${id}`, data);
-    toast.success("Camera updated successfully!");
+    const response = await AxiosInstance.patch(`/lensa/${id}`, data);
+    toast.success("Lens updated successfully!");
     return response.data;
   } catch (error) {
-    toast.error("Failed to update camera");
+    toast.error("Failed to update lens");
     throw error;
   }
 };
 
-const EditProduct = () => {
+const EditLensa = () => {
   const { id } = useParams();
-  const editKameraMutation = useMutation({
-    mutationFn: (data: KameraFormInput) => editKamera(data, id)
+  const editLensaMutation = useMutation({
+    mutationFn: (data: LensaFormInput) => editLensa(data, id)
   });
-  const getKameraDetail = useQuery({
-    queryKey: ["kameraDetail", id],
-    queryFn: () => fetchKameraDetail(id)
+  const getLensaDetail = useQuery({
+    queryKey: ["lensaDetail", id],
+    queryFn: () => fetchLensaDetail(id)
   });
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (editKameraMutation.isSuccess) {
-      navigate("/product", { replace: true });
+    if (editLensaMutation.isSuccess) {
+      navigate("/lensa", { replace: true });
     }
-  }, [editKameraMutation.isSuccess, navigate]);
+  }, [editLensaMutation.isSuccess, navigate]);
 
   // Transform the data to match the form input structure
-  const formData = getKameraDetail.data ? {
-    merek: getKameraDetail.data.merek,
-    warna: getKameraDetail.data.warna,
-    stok: getKameraDetail.data.stok
+  const formData = getLensaDetail.data ? {
+    tipe: getLensaDetail.data.tipe,
+    warna: getLensaDetail.data.warna,
+    ukuran: getLensaDetail.data.ukuran
   } : undefined;
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {(editKameraMutation.isPending || getKameraDetail.isFetching) && (
+      {(editLensaMutation.isPending || getLensaDetail.isFetching) && (
         <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
           <div className="flex items-center bg-white/90 px-6 py-3 rounded-lg shadow-lg">
             <span className="text-2xl mr-4 text-gray-800">Loading...</span>
@@ -88,14 +88,14 @@ const EditProduct = () => {
           </div>
         </div>
       )}
-      <h2 className="text-2xl font-bold mb-6">Edit Camera</h2>
-      <ProductForm
+      <h2 className="text-2xl font-bold mb-6">Edit Lens</h2>
+      <LensaForm
         isEdit={true}
-        mutateFn={editKameraMutation.mutate}
+        mutateFn={editLensaMutation.mutate}
         defaultInputData={formData}
       />
     </div>
   );
 };
 
-export default EditProduct;
+export default EditLensa; 
